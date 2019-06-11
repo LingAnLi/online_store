@@ -1,0 +1,24 @@
+
+		<div class="right_content clearfix">
+				<div class="info_con clearfix">
+				<h3 class="common_title2">基本信息</h3>
+					{{if compare .addr.Addr ""}}
+						<ul class="user_info_list">
+							<li>暂未添加详细信息</li>
+
+						</ul>
+					{{else}}
+						<ul class="user_info_list">
+							<li><span>用户名：</span>{{.addr.User.Name}}</li>
+							<li><span>联系方式：</span>{{.addr.Phone}}</li>
+							<li><span>联系地址：</span>{{.addr.Addr}}</li>
+						</ul>
+					{{end}}
+				</div>
+				
+				
+		</div>
+	</div>
+
+
+

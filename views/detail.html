@@ -1,0 +1,191 @@
+
+
+	<div class="navbar_con">
+		<div class="navbar clearfix">
+			<div class="subnav_con fl">
+				<h1>全部商品分类</h1>	
+				<span></span>			
+				<ul class="subnav">
+					{{range .goodsTypes}}
+						<li><a href="/list?name={{.Name}}" class="fruit" style="background:url(http://127.0.0.1:8888/{{.Logo}}) 28px 0px no-repeat;">{{.Name}}</a></li>
+					{{end}}
+				</ul>
+			</div>
+			<ul class="navlist fl">
+				<li><a href="/">首页</a></li>
+				<li class="interval">|</li>
+				<li><a href="">手机生鲜</a></li>
+				<li class="interval">|</li>
+				<li><a href="">抽奖</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="breadcrumb">
+		<a href="#">全部分类</a>
+		<span>></span>
+		<a href="#">{{.typeName}}</a>
+		<span>></span>
+		<a href="#">商品详情</a>
+	</div>
+	<form action="/user/showOrder" method="post">
+	<div class="goods_detail_con clearfix">
+		<div class="goods_detail_pic fl"><img src="http://127.0.0.1:8888/{{.sku.Image}}" height="350px" width="350px"></div>
+
+		<div class="goods_detail_list fr">
+			<h3>{{.sku.Name}}</h3>
+			<p>{{.sku.Desc}}</p>
+			<div class="prize_bar">
+				<span class="show_pirze">¥<em>{{.sku.Price}}</em></span>
+				<span class="show_unit">单  位：{{.sku.Unite}}</span>
+			</div>
+			<div class="goods_num clearfix" >
+				<div class="num_name fl">数 量：</div>
+				<div class="num_add fl">
+					<input type="text" class="num_show fl" value="1" name="count">
+					<a href="javascript:;" class="add fr" >+</a>
+					<a href="javascript:;" class="minus fr">-</a>	
+				</div> 
+			</div>
+			<div class="total">总价：<em>16.80元</em></div>
+			库存：<span class="stock">{{.sku.Stock}}</span> 销量：<span>{{.sku.Sales}}</span>商品编号：<input   type="text" name="skuid" value="{{.sku.Id}}">
+			<div class="operate_btn">
+				<input type="submit" class="buy_btn" value="立即购买">
+				<a href="javascript:;" class="add_cart" id="add_cart" skuid="{{.sku.Id}}">加入购物车</a>
+			</div>
+		</div>
+	</div>
+	</form>
+	<div class="main_wrap clearfix">
+		<div class="l_wrap fl clearfix">
+			<div class="new_goods">
+				<h3>新品推荐</h3>
+				<ul>
+					{{range .NewProduct}}
+						<li>
+							<a href="/detail?typeName={{.GoodsType.Name}}&id={{.Id}}"><img src="http://127.0.0.1:8888/{{.Image}}"></a>
+							<h4><a href="/detail?typeName={{.GoodsType.Name}}&id={{.Id}}">{{.Name}}</a></h4>
+							<div class="prize">￥{{.Price}}</div>
+						</li>
+					{{end}}
+				</ul>
+			</div>
+		</div>
+
+		<div class="r_wrap fr clearfix">
+			<ul class="detail_tab clearfix">
+				<li class="active">商品介绍</li>
+				<li>评论</li>
+			</ul>
+
+			<div class="tab_content">
+				<dl>
+					<dt>商品详情：</dt>
+					<dd>{{.sku.Goods.Detail}}</dd>
+				</dl>
+			</div>
+
+		</div>
+	</div>
+	<div class="add_jump"></div>
+	<script type="text/javascript" src="/static/js/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript">
+
+
+
+
+		//更新价格
+		function UpdataGoods() {
+			$pirze=$('.show_pirze').children('em').text();
+			$count=$('.num_show').val();
+			$pirze=parseFloat($pirze);
+			$count=parseInt($count);
+			total=$pirze*$count;
+
+			$('.total').children('em').text(total.toFixed(2)+'元')
+		}
+		UpdataGoods();
+		//总价计算
+		$(function () {
+			$stock=parseInt($('.stock').text());
+			//增加商品数量
+			$('.add').click(function () {
+				$count= parseInt($('.num_show').val());
+
+				if ($count>=$stock){
+					$('.num_show').val($stock);
+				}else {
+					$('.num_show').val($count+1);
+				}
+
+				UpdataGoods();
+			});
+			//减少商品数量
+			$('.minus').click(function () {
+				$count= parseInt($('.num_show').val());
+				if ($count<=1){
+					$('.num_show').val(1);
+				}else {
+					$('.num_show').val($count-1);
+				}
+				UpdataGoods();
+			});
+			//文本框更改数量
+			$('.num_show').blur(function () {
+
+				count=$('.num_show').val();
+				console.log(count);
+				if (isNaN(count)||parseInt(count<1)){
+					count=1;
+				}
+				if (parseInt(count)>$stock){
+					$(this).val($stock);
+				}else {
+					$(this).val(parseInt(count));
+				}
+
+				UpdataGoods();
+			});
+			//购物车
+			var $add_x = $('#add_cart').offset().top;
+			var $add_y = $('#add_cart').offset().left;
+
+			var $to_x = $('#show_count').offset().top;
+			var $to_y = $('#show_count').offset().left;
+
+			$(".add_jump").css({'left':$add_y+80,'top':$add_x+10,'display':'block'});
+
+
+			$('#add_cart').click(function(){
+				$skuid=$('.add_cart').attr('skuid');
+				$count=$('.num_show').val();
+				param={"skuid":$skuid,"count":$count};
+
+				//添加购物车
+				$.post('/cart',param,function (resp) {
+
+					if (resp.code==5){
+						$(".add_jump").stop().animate({
+									'left': $to_y+7,
+									'top': $to_x+7},
+								"fast", function() {
+									$(".add_jump").fadeOut('fast',function(){
+										$('#show_count').html(resp.data);
+									});
+
+								});
+
+					}else {
+						alert(resp.msg)
+					}
+
+				});
+
+
+			})
+
+		});
+
+
+
+	</script>

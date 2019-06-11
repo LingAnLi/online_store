@@ -1,0 +1,67 @@
+
+
+	<div class="navbar_con">
+		<div class="navbar">
+			<h1 class="fl"><a href="/list" style="color: white">全部商品分类</a></h1>
+			<ul class="navlist fl">
+				<li><a href="/">首页</a></li>
+				<li class="interval">|</li>
+				<li><a href="">手机生鲜</a></li>
+				<li class="interval">|</li>
+				<li><a href="">抽奖</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="center_con clearfix">
+		<ul class="subnav fl">
+			{{range .goodsTypes}}
+				<li><a href="/list?name={{.Name}}" class="fruit" style="background:url(http://127.0.0.1:8888/{{.Logo}}) 28px 0px no-repeat;">{{.Name}}</a></li>
+			{{end}}
+		</ul>
+		<div class="slide fl">
+			<ul class="slide_pics">
+                {{range .goodsbanners}}
+				    <li><img src="http://127.0.0.1:8888/{{.Image}}" alt="幻灯片"></li>
+		        {{end}}
+			</ul>
+			<div class="prev"></div>
+			<div class="next"></div>
+			<ul class="points"></ul>
+		</div>
+		<div class="adv fl">
+			{{range .PromotionBanner}}
+				<a href="{{.Url}}"><img src="http://127.0.0.1:8888/{{.Image}}"></a>
+			{{end}}
+		</div>
+	</div>
+		{{range .goods}}
+			<div class="list_model">
+		<div class="list_title clearfix">
+			<h3 class="fl" id="model01">{{.MyType}}</h3>
+			<div class="subtitle fl">
+				<span>|</span>
+					{{range .GoodsTxtBanner}}
+					<a href="/detail?typeName={{.GoodsType.Name}}&id={{.GoodsSKU.Id}}">{{.GoodsSKU.Name}}</a>
+					{{end}}
+			</div>
+			<a href="/list?name={{.MyType}}" class="goods_more fr" id="fruit_more">查看更多 ></a>
+		</div>
+
+		<div class="goods_con clearfix">
+			<div class="goods_banner fl"><img src="http://127.0.0.1:8888/{{.MyImg}}"></div>
+			<ul class="goods_list fl">
+
+				{{range .GoodsImgBanner}}
+				<li>
+					<h4><a href="/detail?typeName={{.GoodsType.Name}}&id={{.GoodsSKU.Id}}">{{.GoodsSKU.Name}}</a></h4>
+					<a href="/detail?typeName={{.GoodsType.Name}}&id={{.GoodsSKU.Id}}"><img src="http://127.0.0.1:8888/{{.GoodsSKU.Image}}"></a>
+					<div class="prize">¥ {{.GoodsSKU.Price}}</div>
+				</li>
+				{{end}}
+
+			</ul>
+		</div>
+	</div>
+		{{end}}
+
